@@ -12,7 +12,7 @@ find_path(LibObs_INCLUDE_DIR
       ${CMAKE_CURRENT_SOURCE_DIR}/../deps/obs-source/libobs
       $ENV{LibObs_DIR}
       $ENV{OBS_DIR}
-    PATH_SUFFIXES include
+    PATH_SUFFIXES include libobs
 )
 
 find_library(LibObs_LIB

@@ -18,6 +18,9 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Check CMake Version
         run: cmake --version
 
@@ -46,6 +49,10 @@ jobs:
       # Since we don't have a 'FetchLibObs.cmake', we will assume the environment provides it
       # OR we should implement a fetcher.
       # To keep this safe, we will create the file but comment out the execution that might fail without precise paths.
+
+      - name: Generate obs.lib
+        run: ./scripts/generate-lib.ps1
+        shell: pwsh
 
       - name: Configure CMake
         run: cmake -B build -S . -DCMAKE_BUILD_TYPE=RelWithDebInfo
