@@ -17,6 +17,35 @@ Internally it uses [ActivateAudioInterfaceAsync](https://docs.microsoft.com/en-u
 2. Run the setup wizard, selecting your root OBS folder (`obs-studio/`, _not_ `obs-studio/obs-plugins/`) when asked (or extract the zip to the portable OBS root directory)
 3. Launch OBS and check out the newly available "Application Audio Output Capture" source
 
+## Building from Source
+
+To build this plugin, you need:
+
+- CMake 3.20 or newer
+- Visual Studio 2019/2022 or compatible C++ compiler
+- OBS Studio development files (libobs)
+
+### Standalone Build
+
+If you have `libobs` available in your environment:
+
+```powershell
+mkdir build
+cd build
+cmake ..
+cmake --build . --config Release
+```
+
+### Building Tests
+
+To build the unit tests (requires internet to fetch GoogleTest):
+
+```powershell
+cmake .. -DBUILD_TESTING=ON
+cmake --build . --config Release
+ctest -C Release
+```
+
 ## Troubleshooting
 
 - **Application Audio Output Capture source not showing up after install:** this means that either your OBS is out-of-date (check that it is at least 27.1.x) or you have installed the plugin to the wrong location. To re-install, first uninstall via "Add or remove programs" in the Windows settings, and then run the installer again. Make sure to select the top-level `obs-studio/` folder in (probably) `C:/Program Files/`.

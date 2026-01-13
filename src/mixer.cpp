@@ -2,6 +2,7 @@
 #include "format-conversion.hpp"
 #include "wil/result_macros.h"
 #include <algorithm>
+#include <cstring> // For memmove
 #include <basetsd.h>
 #include <memory>
 #include <processthreadsapi.h>
@@ -124,8 +125,19 @@ void Mixer::Tick()
 	obs_packet.data[0] = reinterpret_cast<BYTE *>(mix.data() + start * format.nChannels);
 	obs_source_output_audio(source, &obs_packet);
 
-	std::vector<float> new_mix(mix.begin() + end * format.nChannels, mix.end());
-	mix = std::move(new_mix);
+	// Optimization: Avoid allocating new vector. proper way is referencing the same buffer
+	// but shifting contents to front.
+	size_t remaining_frames = mix.size() / format.nChannels - end;
+	size_t remaining_samples = remaining_frames * format.nChannels;
+
+	if (remaining_samples > 0) {
+		// memmove allows overlapping memory regions
+		std::memmove(mix.data(), mix.data() + end * format.nChannels,
+			     remaining_samples * sizeof(float));
+	}
+	
+	// Resize checks capacity, if new size < capacity, it doesn't realloc.
+	mix.resize(remaining_samples);
 
 	mix_timestamp += FramesToDuration(end);
 }
