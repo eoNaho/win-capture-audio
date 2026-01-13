@@ -24,31 +24,9 @@ jobs:
       - name: Check CMake Version
         run: cmake --version
 
-      - name: Download OBS Studio (Pre-built for headers/libs)
+      - name: Setup Dependencies
         shell: pwsh
-        run: |
-          $api_url = "https://api.github.com/repos/obsproject/obs-studio/releases/latest"
-          $asset = Invoke-RestMethod -Uri $api_url | Select-Object -ExpandProperty assets | Where-Object { $_.name -like "*Windows-x64.zip" -or $_.name -like "*-Full-x64.zip" } | Select-Object -First 1
-          if (-not $asset) {
-            Write-Error "Could not find OBS Studio zip asset for version $obsVersion"
-            exit 1
-          }
-          $url = $asset.browser_download_url
-          Write-Host "Downloading OBS Studio from $url"
-          $output = "obs-studio.zip"
-          Invoke-WebRequest -Uri $url -OutFile $output
-          Expand-Archive -Path $output -DestinationPath "obs-studio"
-          # Detailed setup for LibObs might require more than just the binary release for compilation 
-          # (needs headers which are often not in the binary release). 
-          # For a robust CI, we often need to fetch source or use a specific dev package.
-          # For this auditing task, we will setup the structure but note that pointing to LibObs requires correct artifacts.
-          # A better approach for CI is often 'obs-deps' or building OBS. 
-          # However, to save time/complexity in this artifact, we will use a common action if available or simulate the structure.
-
-      # NOTE: Properly setting up LibObs in CI is non-trivial without a dedicated action or cache.
-      # Since we don't have a 'FetchLibObs.cmake', we will assume the environment provides it
-      # OR we should implement a fetcher.
-      # To keep this safe, we will create the file but comment out the execution that might fail without precise paths.
+        run: ./scripts/setup-deps.ps1
 
       - name: Generate obs.lib
         run: ./scripts/generate-lib.ps1
