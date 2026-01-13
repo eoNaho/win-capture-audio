@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 #include <tlhelp32.h>
-#include <wil/handle.h>
+#include <wil/resource.h>
 
 namespace ProcessUtils {
 
