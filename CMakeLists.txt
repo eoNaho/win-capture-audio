@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(win-capture-audio VERSION 2.2.3)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 if(NOT TARGET libobs)
   find_package(LibObs REQUIRED)
 endif()

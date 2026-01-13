@@ -24,8 +24,14 @@ jobs:
       - name: Download OBS Studio (Pre-built for headers/libs)
         shell: pwsh
         run: |
-          $obsVersion = "29.1.3"
-          $url = "https://github.com/obsproject/obs-studio/releases/download/$obsVersion/OBS-Studio-$obsVersion-Full-x64.zip"
+          $api_url = "https://api.github.com/repos/obsproject/obs-studio/releases/latest"
+          $asset = Invoke-RestMethod -Uri $api_url | Select-Object -ExpandProperty assets | Where-Object { $_.name -like "*Windows-x64.zip" -or $_.name -like "*-Full-x64.zip" } | Select-Object -First 1
+          if (-not $asset) {
+            Write-Error "Could not find OBS Studio zip asset for version $obsVersion"
+            exit 1
+          }
+          $url = $asset.browser_download_url
+          Write-Host "Downloading OBS Studio from $url"
           $output = "obs-studio.zip"
           Invoke-WebRequest -Uri $url -OutFile $output
           Expand-Archive -Path $output -DestinationPath "obs-studio"

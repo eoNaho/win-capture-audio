@@ -14,3 +14,8 @@ compile-commands.json
 
 # ignore generated files
 *.generated.*
+
+# dependencies
+deps/obs-studio/
+deps/obs-studio.zip
+deps

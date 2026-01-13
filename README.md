@@ -27,14 +27,15 @@ To build this plugin, you need:
 
 ### Standalone Build
 
-If you have `libobs` available in your environment:
-
-```powershell
-mkdir build
-cd build
-cmake ..
-cmake --build . --config Release
-```
+1. Run the setup script to download dependencies:
+   ```powershell
+   ./scripts/setup-deps.ps1
+   ```
+2. Build with CMake:
+   ```powershell
+   cmake -B build -S . -DOBS_DIR="deps/obs-studio"
+   cmake --build build --config Release
+   ```
 
 ### Building Tests
 
